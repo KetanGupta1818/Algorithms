@@ -1,0 +1,80 @@
+class MinimumSegmentTreeWithFrequencyCount{
+    int lengthOfArray;
+    int[] arr;
+    Pair[] segmentArray;
+    int heightOfSegmentTree;
+
+    public MinimumSegmentTreeWithFrequencyCount(int[] a){
+        this.lengthOfArray = a.length;
+        this.arr = new int[lengthOfArray];
+        for(int i=0;i<lengthOfArray;i++) arr[i] = a[i];
+        this.heightOfSegmentTree = (int)Math.ceil(Math.log(lengthOfArray)/Math.log(2));
+        int sizeOfSegmentTree = 2*(1<<heightOfSegmentTree)-1;
+        this.segmentArray = new Pair[sizeOfSegmentTree];
+        constructorUtil(0,lengthOfArray-1,0);
+    }
+    private Pair constructorUtil(int segmentStart, int segmentEnd, int segmentIndex){
+        if(segmentStart==segmentEnd) return segmentArray[segmentIndex] = new Pair(arr[segmentStart],1);
+        int mid = getMid(segmentStart,segmentEnd);
+        Pair leftChild = constructorUtil(segmentStart,mid,segmentIndex*2+1);
+        Pair rightChild = constructorUtil(mid+1,segmentEnd,segmentIndex*2+2);
+        if(leftChild.minimumElement<rightChild.minimumElement) segmentArray[segmentIndex] = new Pair(leftChild.minimumElement, leftChild.frequency);
+        else if(leftChild.minimumElement>rightChild.minimumElement) segmentArray[segmentIndex] = new Pair(rightChild.minimumElement, rightChild.frequency);
+        else segmentArray[segmentIndex] = new Pair(rightChild.minimumElement, leftChild.frequency+rightChild.frequency);
+        return segmentArray[segmentIndex];
+    }
+    private int getMid(int segmentStart, int segmentEnd){
+        return (segmentStart+segmentEnd)>>1;
+    }
+    public Pair getMinimumWithFrequencyInclusiveRange(int left, int right){
+        return minimumUtil(0,lengthOfArray-1,0,left,right);
+    }
+    private Pair minimumUtil(int segmentStart, int segmentEnd, int segmentIndex, int queryStart, int queryEnd){
+        if(queryStart<=segmentStart && segmentEnd<=queryEnd) return segmentArray[segmentIndex];
+        if(queryEnd<segmentStart || segmentEnd<queryStart) return new Pair();
+        int mid = getMid(segmentStart, segmentEnd);
+        Pair leftChild = minimumUtil(segmentStart,mid,segmentIndex*2+1,queryStart,queryEnd);
+        Pair rightChild = minimumUtil(mid+1,segmentEnd,segmentIndex*2+2,queryStart,queryEnd);
+        if(leftChild.minimumElement<rightChild.minimumElement) return leftChild;
+        else if(rightChild.minimumElement<leftChild.minimumElement) return rightChild;
+        return new Pair(leftChild.minimumElement,leftChild.frequency+rightChild.frequency);
+    }
+    public void update(int index, int newValue){
+        updateUtil(0,lengthOfArray-1,0,index,newValue);
+    }
+    private Pair updateUtil(int segmentStart, int segmentEnd, int segmentIndex, int index, int newValue){
+        if(index<segmentStart || index>segmentEnd) return segmentArray[segmentIndex];
+        if(index==segmentStart && index==segmentEnd) return segmentArray[segmentIndex] = new Pair(newValue,1);
+        int mid = getMid(segmentStart,segmentEnd);
+        Pair leftChild = updateUtil(segmentStart,mid,segmentIndex*2+1,index,newValue);
+        Pair rightChild = updateUtil(mid+1,segmentEnd,segmentIndex*2+2,index,newValue);
+        if(leftChild.minimumElement<rightChild.minimumElement) segmentArray[segmentIndex] = new Pair(leftChild.minimumElement, leftChild.frequency);
+        else if(leftChild.minimumElement>rightChild.minimumElement) segmentArray[segmentIndex] = new Pair(rightChild.minimumElement, rightChild.frequency);
+        else segmentArray[segmentIndex] = new Pair(rightChild.minimumElement, leftChild.frequency+rightChild.frequency);
+        return segmentArray[segmentIndex];
+    }
+    public void printSGA(){
+        System.out.println(Arrays.toString(segmentArray));
+    }
+}
+class Pair{
+    int minimumElement;
+    int frequency;
+
+    public Pair(int minimumElement, int frequency){
+        this.minimumElement = minimumElement;
+        this.frequency = frequency;
+    }
+    public Pair(){
+        this.minimumElement = Integer.MAX_VALUE;
+        this.frequency = -1;
+    }
+
+    @Override
+    public String toString() {
+        return "Pair{" +
+                "minimumElement=" + minimumElement +
+                ", frequency=" + frequency +
+                '}';
+    }
+}
