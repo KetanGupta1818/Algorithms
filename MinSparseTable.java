@@ -10,7 +10,7 @@ class MinSparseTable{
         int maxPowerOfTwo = Math.max(1,(int)Math.ceil(Math.log(n)/Math.log(2)));
         this.logs = new int[n+1];
         computeLogs();
-        this.table = new int[maxPowerOfTwo][n];
+        this.table = new int[maxPowerOfTwo+1][n];
         for(int i=0;i<=logs[n];i++){
             int curLen = 1<<i;
             for(int j=0;j<=n-curLen;j++){
