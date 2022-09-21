@@ -1,3 +1,4 @@
+//Java implementation of https://cp-algorithms.com/string/suffix-array.html
 class SuffixArray{
     String string;
     int[] s;
