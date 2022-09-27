@@ -47,8 +47,8 @@ class SuffixArray{
             }
             swap(c,cn);
         }
-        return p;
-      //return removeDollar(p); //Uncomment this if empty string is in_valid suffix
+        // return p; //Uncomment, if empty string is a valid suffix
+        return removeDollar(p);
     }
     private int[] removeDollar(int[] p){
         int[] res = new int[p.length-1];
@@ -62,4 +62,31 @@ class SuffixArray{
             cn[i] = temp;
         }
     }
+    public int[] getLCPArray(int[] sa){
+        int n = sa.length;
+        int[] lcp = new int[n];
+        int[] rank = new int[n];
+        int k = 0;
+        for(int i=0;i<n;i++) rank[sa[i]] = i;
+        for(int i=0;i<n;i++){
+            if(rank[i]==n-1) {
+                k=0;
+                continue;
+            }
+            int j = sa[rank[i]+1];
+            while(i+k<n && j+k<n && string.charAt(i+k)==string.charAt(j+k)) k++;
+            lcp[rank[i]+1] = k;
+            if(k>0) k--;
+        }
+        return lcp;
+    }
+    //sa -> suffix array
+    //lcp -> longest common prefix of two consecutive prefix
+    public long numberOfDifferentSubStrings(int[] sa, int[] lcp){
+        int n = sa.length;
+        long res = 0L;
+        for(int i=0;i<n;i++) res += n-sa[i]-lcp[i];
+        return res;
+    }
 }
+
