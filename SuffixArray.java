@@ -88,5 +88,24 @@ class SuffixArray{
         for(int i=0;i<n;i++) res += n-sa[i]-lcp[i];
         return res;
     }
+    public static String longestCommonSubstring(String s1, String s2){
+        SuffixArray obj = new SuffixArray(s1+"@"+s2);
+        int[] sa = obj.getSuffixArray();
+        int[] lcp = obj.getLCPArray(sa);
+        int len1 = s1.length();
+        int max = 0;
+        int startIndex=-1;
+        for(int i=2;i<sa.length;i++){
+            int prev = sa[i-1];
+            int cur = sa[i];
+            if((prev>len1 && cur<len1) || (prev<len1 && cur>len1)) {
+                if(max<lcp[i]){
+                    max = lcp[i];
+                    startIndex = Math.min(prev,cur);
+                }
+            }
+        }
+        if(max ==0 ) return "";
+        return s1.substring(startIndex,startIndex+max);
+    }
 }
-
