@@ -1,0 +1,92 @@
+class LCA{
+    List<List<Integer>> tree;
+    int n;
+    int[] eulerTour;
+    int[] firstVisit;
+    int index=0;
+    int root;
+    int[] heights;
+    MinSparseTableWithIndex minSparseTableWithIndex;
+
+    public LCA(List<List<Integer>> tree,int root){
+        this.tree = tree;
+        this.root = root;
+        this.n = tree.size();
+        this.eulerTour = new int[2*n-1];
+        this.heights = new int[2*n-1];
+        this.firstVisit = new int[n];
+        Arrays.fill(firstVisit,-1);
+        dfs(root,-1,0);
+        this.minSparseTableWithIndex = new MinSparseTableWithIndex(heights);
+    }
+    private void dfs(int node,int parent,int height){
+        if(firstVisit[node] == -1) firstVisit[node] = index;
+        heights[index] = height;
+        eulerTour[index++] = node;
+
+        for(int child: tree.get(node)){
+            if(child == parent) continue;
+            dfs(child,node,height+1);
+            heights[index] = height;
+            eulerTour[index++] = node;
+        }
+    }
+    public int getLCA(int u, int v){
+        return eulerTour[minSparseTableWithIndex.getMinimum(Math.min(firstVisit[u],firstVisit[v]),Math.max(firstVisit[u],firstVisit[v])).index];
+    }
+}
+class MinSparseTableWithIndex{
+    int n;
+    int[] logs;
+    int[] arr;
+    myPair[][] table;
+    MinSparseTableWithIndex(int[] a){
+        this.n = a.length;
+        this.arr = new int[n];
+        for(int i=0;i<a.length;i++) arr[i] = a[i];
+        int maxPowerOfTwo = Math.max(1,(int)Math.ceil(Math.log(n)/Math.log(2)));
+        this.logs = new int[n+1];
+        computeLogs();
+        this.table = new myPair[maxPowerOfTwo+1][n];
+        for(int i=0;i<=logs[n];i++){
+            int curLen = 1<<i;
+            for(int j=0;j<=n-curLen;j++){
+                if(curLen==1) {
+                    table[i][j] = new myPair(arr[j],j);
+                }
+                else {
+                    myPair left = table[i-1][j];
+                    myPair right = table[i-1][j+(curLen/2)];
+                    if(left.minimumElement<right.minimumElement) table[i][j] = new myPair(left);
+                    else table[i][j] = new myPair(right);
+                }
+            }
+        }
+    }
+    private void computeLogs(){
+        for(int i=2;i<=n;i++) logs[i] = logs[i/2]+1;
+
+    }
+    public myPair getMinimum(int left, int right){
+        int p = logs[right-left+1];
+        int pLen = 1 << p;
+        myPair p1 = table[p][left];
+        myPair p2 = table[p][right-pLen+1];
+        if(p1.minimumElement<p2.minimumElement) return p1;
+        return p2;
+    }
+
+}
+class myPair {
+    int minimumElement;
+    int index;
+
+    public myPair(int minimumElement, int index) {
+        this.minimumElement = minimumElement;
+        this.index = index;
+    }
+    public myPair(myPair p){
+        this.minimumElement = p.minimumElement;
+        this.index = p.index;
+    }
+}
