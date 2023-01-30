@@ -1,4 +1,4 @@
-class SizesOfConnectedComponentsInComplementGraph{
+class SizesOfConnectedComponentsInComplementGraph {
     private static int bn;
     private static int size;
     public static List<Integer> find(List<List<Integer>> graph) {
@@ -26,7 +26,7 @@ class SizesOfConnectedComponentsInComplementGraph{
         for (int i = 0; i < nodes_in_complement_graph; i++) complement_graph.add(new ArrayList<>());
         HashMap<Integer, Integer> map = new HashMap<>();
         map.put(node, 0);
- 
+
         for (int u : graph.get(node)) map.put(u, map.size());
         for (int u : graph.get(node)) {
             boolean[] adj = new boolean[nodes_in_complement_graph];
@@ -35,32 +35,41 @@ class SizesOfConnectedComponentsInComplementGraph{
                 if (big_node[v]) cbn++;
                 else adj[map.get(v)] = true;
             }
-            if (cbn == bn) adj[0] = true;
+            if (cbn == bn) {
+                adj[0] = true;
+            }
             for (int v = 0; v < nodes_in_complement_graph; v++) {
-                if (!adj[v]) {
+                if (!adj[v] && v!=map.get(u)) {
+                    if(v==0) complement_graph.get(v).add(map.get(u));
                     complement_graph.get(map.get(u)).add(v);
-                    complement_graph.get(v).add(map.get(u));
                 }
             }
         }
-        int cc = 0;
         List<Integer> list = new ArrayList<>();
         boolean[] visited = new boolean[nodes_in_complement_graph];
         for (int i = 0; i < nodes_in_complement_graph; i++) {
             if (!visited[i]) {
                 size = 0;
-                dfs(complement_graph, i, visited);
+                bfs(complement_graph, i, visited);
                 list.add(size);
             }
         }
         return list;
     }
-    private static void dfs(List<List<Integer>> graph, int node, boolean[] visited){
+    private static void bfs(List<List<Integer>> graph, int node, boolean[] visited){
         visited[node] = true;
-        if(node == 0) size+=bn;
-        else size++;
-        for(int c: graph.get(node)){
-            if(!visited[c]) dfs(graph,c,visited);
+        Queue<Integer> q = new ArrayDeque<>();
+        q.offer(node);
+        while(!q.isEmpty()) {
+            int cur = q.remove();
+            if (cur == 0) size += bn;
+            else size++;
+            for (int c : graph.get(cur)) {
+                if (!visited[c]) {
+                    q.offer(c);
+                    visited[c] = true;
+                }
+            }
         }
     }
 }
