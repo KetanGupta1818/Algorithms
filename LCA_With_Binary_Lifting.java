@@ -1,3 +1,10 @@
+/*
+    Accepted Solutions
+    1) https://www.codechef.com/viewsolution/96491109 
+    
+
+
+*/
 class LCA_With_Binary_Lifting {
     int[] parent;
     int[] height;
