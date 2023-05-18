@@ -75,43 +75,6 @@ class UnionFind{
     }
 }
 
-class LCA{
-    List<List<Integer>> tree;
-    int n;
-    int[] eulerTour;
-    int[] firstVisit;
-    int index=0;
-    int root;
-    int[] heights;
-    MinSparseTableWithIndex minSparseTableWithIndex;
-
-    public LCA(List<List<Integer>> tree,int root){
-        this.tree = tree;
-        this.root = root;
-        this.n = tree.size();
-        this.eulerTour = new int[2*n-1];
-        this.heights = new int[2*n-1];
-        this.firstVisit = new int[n];
-        Arrays.fill(firstVisit,-1);
-        dfs(root,-1,0);
-        this.minSparseTableWithIndex = new MinSparseTableWithIndex(heights);
-    }
-    private void dfs(int node,int parent,int height){
-        if(firstVisit[node] == -1) firstVisit[node] = index;
-        heights[index] = height;
-        eulerTour[index++] = node;
-
-        for(int child: tree.get(node)){
-            if(child == parent) continue;
-            dfs(child,node,height+1);
-            heights[index] = height;
-            eulerTour[index++] = node;
-        }
-    }
-    public int getLCA(int u, int v){
-        return eulerTour[minSparseTableWithIndex.getMinimum(Math.min(firstVisit[u],firstVisit[v]),Math.max(firstVisit[u],firstVisit[v])).index];
-    }
-}
 
 class myPair {
     int minimumElement;
