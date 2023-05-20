@@ -1,6 +1,7 @@
 /*
     Accepted Solutions
     1) https://www.codechef.com/viewsolution/96491109 
+    2) https://codeforces.com/contest/1304/submission/206616335
     
 
 
