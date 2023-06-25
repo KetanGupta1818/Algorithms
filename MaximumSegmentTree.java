@@ -30,7 +30,7 @@ class MaximumSegmentTree{
     }
     private long getMaximumUtil(int segmentStart, int segmentEnd, int queryStart, int queryEnd, int segmentIndex){
         if(queryStart<=segmentStart && segmentEnd<=queryEnd) return segmentArray[segmentIndex];
-        if(queryEnd<segmentStart || segmentEnd<queryStart) return -1;
+        if(queryEnd<segmentStart || segmentEnd<queryStart) return Long.MIN_VALUE;
         int mid = getMid(segmentStart,segmentEnd);
         return Math.max(getMaximumUtil(segmentStart,mid,queryStart,queryEnd,segmentIndex*2+1),
                 getMaximumUtil(mid+1,segmentEnd,queryStart,queryEnd,segmentIndex*2+2));
