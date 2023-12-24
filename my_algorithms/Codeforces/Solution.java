@@ -1,16 +1,5 @@
 package kg.my_algorithms.Codeforces;
 
-/*
-                                                   /\  /\
-                                                  /  \/  \
-                                                 /        \
-                                            ---------------------
-                                                 \        /
-                                                  \  /\  /
-                                                   \/  \/
-*/
-
-
 
 import java.io.*;
 import java.util.*;
@@ -21,11 +10,7 @@ public class Solution{
   //      private static final Scanner slow_scanner = new Scanner(System.in);
     public static void main(String[] args) throws IOException {
         PrintWriter out = new PrintWriter(System.out);
-        int testCases = fr.nextInt();
-        for(int testCase=1;testCase<=testCases;testCase++) {
 
-
-        }
 
         out.flush();
     }
